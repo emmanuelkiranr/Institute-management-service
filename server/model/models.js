@@ -8,17 +8,17 @@ const User = sequelize.define("User", {
     autoIncrement: true,
   },
   firstName: {
-    type: DataTypes.STRING(20),
+    type: DataTypes.STRING(30),
     allowNull: false,
   },
   middleName: {
-    type: DataTypes.STRING(20),
+    type: DataTypes.STRING(30),
   },
   lastname: {
-    type: DataTypes.STRING(20),
+    type: DataTypes.STRING(30),
   },
   fullName: {
-    type: DataTypes.STRING(20),
+    type: DataTypes.STRING(100),
     allowNull: false,
   },
   gender: {
@@ -30,17 +30,17 @@ const User = sequelize.define("User", {
     allowNull: false,
   },
   email: {
-    type: DataTypes.STRING(20),
+    type: DataTypes.STRING(50),
     allowNull: false,
     unique: true,
   },
   phone: {
-    type: DataTypes.STRING(20),
+    type: DataTypes.STRING(10),
     allowNull: false,
     unique: true,
   },
   address: {
-    type: DataTypes.STRING(50),
+    type: DataTypes.STRING(100),
     allowNull: false,
   },
   board_12: {
@@ -48,11 +48,11 @@ const User = sequelize.define("User", {
     allowNull: false,
   },
   Institute_12: {
-    type: DataTypes.STRING(20),
+    type: DataTypes.STRING(50),
     allowNull: false,
   },
   mark_12: {
-    type: DataTypes.FLOAT(10, 10),
+    type: DataTypes.FLOAT,
     allowNull: false,
   },
   board_10: {
@@ -60,15 +60,15 @@ const User = sequelize.define("User", {
     allowNull: false,
   },
   Institute_10: {
-    type: DataTypes.STRING(20),
+    type: DataTypes.STRING(50),
     allowNull: false,
   },
   mark_10: {
-    type: DataTypes.FLOAT(10, 10),
+    type: DataTypes.FLOAT,
     allowNull: false,
   },
   entrance: {
-    type: DataTypes.FLOAT(10, 10),
+    type: DataTypes.FLOAT,
     allowNull: false,
   },
   department: {
@@ -80,19 +80,19 @@ const User = sequelize.define("User", {
     allowNull: false,
   },
   fatherName: {
-    type: DataTypes.STRING(20),
+    type: DataTypes.STRING(30),
     allowNull: false,
   },
   motherName: {
-    type: DataTypes.STRING(20),
+    type: DataTypes.STRING(30),
     allowNull: false,
   },
   occupation: {
-    type: DataTypes.STRING(10),
+    type: DataTypes.STRING(20),
     allowNull: false,
   },
   pemail: {
-    type: DataTypes.STRING(20),
+    type: DataTypes.STRING(50),
     allowNull: false,
     unique: true,
   },
@@ -110,7 +110,7 @@ const Account = sequelize.define("Account", {
     autoIncrement: true,
   },
   email: {
-    type: DataTypes.STRING(20),
+    type: DataTypes.STRING(50),
     allowNull: false,
     unique: true,
   },
@@ -139,7 +139,7 @@ const Course = sequelize.define("Course", {
     autoIncrement: true,
   },
   courseName: {
-    type: DataTypes.STRING(10),
+    type: DataTypes.STRING(50),
     allowNull: false,
     unique: true,
   },
