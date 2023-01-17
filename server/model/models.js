@@ -127,7 +127,12 @@ const Account = sequelize.define("Account", {
 // A user has 2 accounts[student and parent] so one to many
 // The user table can be created/exist without Account table but the account table cannot exist without user table so the foreign key should
 // be added in the Account table
-User.hasMany(Account); // This will create a column userId in the Account table - with no values
+
+// This will create a column userId in the Account table - with no values
+User.hasMany(Account, { constraints: true, onDelete: "CASCADE" });
+
+/* onDelete cascade - on deleting an user delete all the entries belonging to that user in the accounts table/ contacts table etc
+Delete anything from the main/parent table will automatically delete from the child table*/
 
 Account.belongsTo(User); // (same as above) This puts the foreign key userId in the Account table
 // 2 statements so that we can use the utilities method that sequelize provides on both of these tables
