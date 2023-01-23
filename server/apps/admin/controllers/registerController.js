@@ -1,4 +1,5 @@
 import { User, Account } from "../../../model/models.js";
+import bcrypt from "bcrypt";
 
 const register = async (req, res) => {
   try {
@@ -71,20 +72,22 @@ const register = async (req, res) => {
     });
 
     let password = firstName.toLowerCase() + "@2023";
+    let passwordHash = await bcrypt.hash(password, 10);
 
     await Account.create({
       email: email,
-      password,
+      password: passwordHash,
       role: "S",
       UserId: newUser.dataValues.id,
     });
 
     let name = fatherName.split(" ");
     let ppassword = name[0].toLowerCase() + "@2023";
+    let ppasswordHash = await bcrypt.hash(ppassword, 10);
 
     await Account.create({
       email: pemail,
-      password: ppassword,
+      password: ppasswordHash,
       role: "P",
       UserId: newUser.dataValues.id,
     });

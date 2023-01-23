@@ -1,4 +1,5 @@
 import { Account, User } from "../../../model/models.js";
+import bcrypt from "bcrypt";
 
 const deleteUser = async (req, res) => {
   try {
@@ -29,23 +30,30 @@ const deleteUser = async (req, res) => {
     let confirm = await Account.findOne({
       where: {
         email: "admin@admin.myedu.edu.in",
-        password,
+        // password,
       },
     });
 
-    if (confirm == null) {
+    if (confirm) {
+      let hashPassword = await bcrypt.compare(
+        password,
+        confirm.dataValues.password
+      );
+      if (hashPassword) {
+        await User.destroy({
+          where: {
+            fullName,
+          },
+        });
+        res.json({ data: "Successfully deleted user" });
+      } else {
+        return res.status(400).json({ data: "Unauthorized access" });
+      }
+    } else {
       return res
         .status(400)
         .json({ data: "Bad request or Invalid credentials" });
     }
-
-    await User.destroy({
-      where: {
-        fullName,
-      },
-    });
-
-    res.json({ data: "Successfully deleted user" });
   } catch (err) {
     console.log(err);
     res.status(500).json({ data: "Internal server error" });

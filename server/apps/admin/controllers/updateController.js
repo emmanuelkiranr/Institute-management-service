@@ -1,4 +1,5 @@
 import { User, Account } from "../../../model/models.js";
+import bcrypt from "bcrypt";
 
 const updateContact = async (req, res) => {
   try {
@@ -51,18 +52,21 @@ const updatePassword = async (req, res) => {
     }
 
     let prevPassword = exists.dataValues.password;
+    let decryptPrevPass = await bcrypt.compare(password, prevPassword);
 
-    if (password === prevPassword) {
+    if (decryptPrevPass) {
       return res
         .status(400)
         .json({ data: "New password cannot be same as old one" });
     }
 
+    let hashPassword = await bcrypt.hash(password, 10);
+
     await Account.update(
-      { password },
+      { password: hashPassword },
       {
         where: {
-          email: [email, pemail],
+          email: exists.dataValues.email, // it should be the email of the right actor
         },
       }
     );

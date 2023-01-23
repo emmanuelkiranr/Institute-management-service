@@ -1,4 +1,5 @@
 import { Account } from "../../../model/models.js";
+import bcrypt from "bcrypt";
 
 const login = async (req, res) => {
   try {
@@ -6,15 +7,27 @@ const login = async (req, res) => {
     let user = await Account.findOne({
       where: {
         email,
-        password,
+        // password, cannot check password here since we need to compare the plain password with hashed one
       },
     }); // the returned variable "user" will contain that users details from the Account table
-    if (user == null) {
+
+    if (!user || user == null) {
       return res.status(400).json({
-        data: "User doesn't exist or Invalid credentials",
+        data: "User doesn't exist or Invalid Credentials!",
       }); // bad request
+    } else {
+      let hashPassword = await bcrypt.compare(
+        password,
+        user.dataValues.password
+      );
+      if (hashPassword) {
+        res.json({ data: "login successfull", details: user });
+      } else {
+        return res.status(400).json({
+          data: "User doesn't exist or Invalid Credentials!",
+        });
+      }
     }
-    res.json({ data: "login successfull", details: user });
   } catch (err) {
     console.log(err);
     res.status(500).json({ error: "Unable to login" }); // internal server error

@@ -115,7 +115,7 @@ const Account = sequelize.define("Account", {
     unique: true,
   },
   password: {
-    type: DataTypes.STRING(20),
+    type: DataTypes.STRING(100),
     allowNull: false,
   },
   role: {
