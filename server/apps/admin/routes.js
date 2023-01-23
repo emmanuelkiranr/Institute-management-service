@@ -20,6 +20,6 @@ router.put("/admin/updatecontact", update.updateContact);
 router.put("/admin/updatepassword", update.updatePassword);
 
 // Delete routes
-router.get("/admin/delete", deleteUser);
+router.delete("/admin/delete", deleteUser);
 
 export default router;
