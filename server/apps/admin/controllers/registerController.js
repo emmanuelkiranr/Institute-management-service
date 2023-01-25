@@ -1,4 +1,5 @@
 import { User, Account } from "../../../model/models.js";
+import ResponseModel from "../../../utilities/responseModel.js";
 import bcrypt from "bcrypt";
 
 const register = async (req, res) => {
@@ -40,7 +41,9 @@ const register = async (req, res) => {
       },
     });
     if (user) {
-      return res.status(400).json({ data: "Student already exists" });
+      return res
+        .status(400)
+        .json(new ResponseModel(null, null, ["Student already exists"]));
     }
 
     let semester = 1;
@@ -92,10 +95,10 @@ const register = async (req, res) => {
       UserId: newUser.dataValues.id,
     });
 
-    res.json({ data: "Successfully registered student" });
+    res.json(new ResponseModel("Successfully registered student"));
   } catch (err) {
     console.log(err);
-    res.status(500).json({ error: "Unable to register" });
+    res.status(500).json(new ResponseModel(null, null, ["Unable to register"]));
   }
 };
 

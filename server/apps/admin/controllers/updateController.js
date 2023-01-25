@@ -1,4 +1,5 @@
 import { User, Account } from "../../../model/models.js";
+import ResponseModel from "../../../utilities/responseModel.js";
 import bcrypt from "bcrypt";
 
 const updateContact = async (req, res) => {
@@ -12,7 +13,9 @@ const updateContact = async (req, res) => {
     });
 
     if (exists == null) {
-      return res.status(400).json({ data: "User doesn't exist" });
+      return res
+        .status(400)
+        .json(new ResponseModel(null, null, ["User doesn't exist"]));
     }
 
     await User.update(
@@ -28,10 +31,12 @@ const updateContact = async (req, res) => {
       }
     );
 
-    res.json({ data: "Contact updated successfully" });
+    res.json(new ResponseModel("Contact updated successfully"));
   } catch (err) {
     console.log(err);
-    res.status(500).json({ error: "Internal server error" });
+    res
+      .status(500)
+      .json(new ResponseModel(null, null, ["Internal server error"]));
   }
 };
 
@@ -44,11 +49,14 @@ const updatePassword = async (req, res) => {
         email: [email, pemail],
       },
     });
+    // In this if email and pemail is not present then you won't get the internal error
 
     if (exists == null) {
       return res
         .status(400)
-        .json({ data: "Bad request or invalid credentials" });
+        .json(
+          new ResponseModel(null, null, ["Bad request or invalid credentials"])
+        );
     }
 
     let prevPassword = exists.dataValues.password;
@@ -57,7 +65,11 @@ const updatePassword = async (req, res) => {
     if (decryptPrevPass) {
       return res
         .status(400)
-        .json({ data: "New password cannot be same as old one" });
+        .json(
+          new ResponseModel(null, null, [
+            "New password cannot be same as old one",
+          ])
+        );
     }
 
     let hashPassword = await bcrypt.hash(password, 10);
@@ -71,10 +83,12 @@ const updatePassword = async (req, res) => {
       }
     );
 
-    res.json({ data: "Successfully updated password" });
+    res.json(new ResponseModel("Successfully updated password"));
   } catch (err) {
     console.log(err);
-    res.status(500).json({ data: "Internal serever error" });
+    res
+      .status(500)
+      .json(new ResponseModel(null, null, ["Internal serever error"]));
   }
 };
 

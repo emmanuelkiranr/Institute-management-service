@@ -1,4 +1,5 @@
 import { Account, User } from "../../../model/models.js";
+import ResponseModel from "../../../utilities/responseModel.js";
 import bcrypt from "bcrypt";
 
 const deleteUser = async (req, res) => {
@@ -23,7 +24,9 @@ const deleteUser = async (req, res) => {
     if (exists == null) {
       return res
         .status(400)
-        .json({ data: "Bad request or Invalid credentials" });
+        .json(
+          new ResponseModel(null, null, ["Bad request or Invalid credentials"])
+        );
     }
 
     // Enter admin password to confirm deletion
@@ -45,18 +48,24 @@ const deleteUser = async (req, res) => {
             fullName,
           },
         });
-        res.json({ data: "Successfully deleted user" });
+        res.json(new ResponseModel("Successfully deleted user"));
       } else {
-        return res.status(400).json({ data: "Unauthorized access" });
+        return res
+          .status(400)
+          .json(new ResponseModel(null, null, ["Unauthorized access"]));
       }
     } else {
       return res
         .status(400)
-        .json({ data: "Bad request or Invalid credentials" });
+        .json(
+          new ResponseModel(null, null, ["Bad request or Invalid credentials"])
+        );
     }
   } catch (err) {
     console.log(err);
-    res.status(500).json({ data: "Internal server error" });
+    res
+      .status(500)
+      .json(new ResponseModel(null, null, ["Internal server error"]));
   }
 };
 

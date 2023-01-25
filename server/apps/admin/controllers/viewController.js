@@ -1,4 +1,5 @@
 import { User, Account } from "../../../model/models.js";
+import ResponseModel from "../../../utilities/responseModel.js";
 
 // all user details
 const profile = async (req, res) => {
@@ -15,10 +16,12 @@ const profile = async (req, res) => {
         "pphone",
       ],
     });
-    res.json({ data: result });
+    res.json(new ResponseModel(result));
   } catch (err) {
     console.log(err);
-    res.status(500).json({ error: "Internal server error" });
+    res
+      .status(500)
+      .json(new ResponseModel(null, null, ["Internal server error"]));
   }
 };
 
@@ -42,10 +45,12 @@ const profileFiltered = async (req, res) => {
         semester,
       },
     });
-    res.json({ data: result });
+    res.json(new ResponseModel(result));
   } catch (err) {
     console.log(err);
-    res.status(500).json({ error: "Internal server error" });
+    res
+      .status(500)
+      .json(new ResponseModel(null, null, ["Internal server error"]));
   }
 };
 
@@ -58,10 +63,12 @@ const parentAccounts = async (req, res) => {
         role: "P",
       },
     });
-    res.json({ data: result });
+    res.json(new ResponseModel(result));
   } catch (err) {
     console.log(err);
-    res.status(500).json({ error: "Internal server error" });
+    res
+      .status(500)
+      .json(new ResponseModel(null, null, ["Internal server error"]));
   }
 };
 const studentAccounts = async (req, res) => {
@@ -71,10 +78,12 @@ const studentAccounts = async (req, res) => {
         role: "S",
       },
     });
-    res.json({ data: result });
+    res.json(new ResponseModel(result));
   } catch (err) {
     console.log(err);
-    res.status(500).json({ error: "Internal server error" });
+    res
+      .status(500)
+      .json(new ResponseModel(null, null, ["Internal server error"]));
   }
 };
 
