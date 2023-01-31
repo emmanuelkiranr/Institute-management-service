@@ -9,4 +9,4 @@ app.listen(80);
 app.use(parser.json({ inflate: true })); // since we need to parse json
 
 app.use("/api/v1", accountsRoute);
-app.use("/api/v1", adminRoute);
+app.use("/api/v1/admin", adminRoute);
