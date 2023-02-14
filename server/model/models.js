@@ -13,9 +13,11 @@ const User = sequelize.define("User", {
   },
   middleName: {
     type: DataTypes.STRING(30),
+    allowNull: true,
   },
   lastname: {
     type: DataTypes.STRING(30),
+    allowNull: false,
   },
   fullName: {
     type: DataTypes.STRING(100),

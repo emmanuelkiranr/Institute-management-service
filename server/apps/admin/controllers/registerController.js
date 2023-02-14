@@ -28,7 +28,13 @@ const register = async (req, res) => {
       pphone,
     } = req.body;
 
-    let fullName = firstName + " " + middleName + " " + lastname;
+    let fullName;
+    if (!middleName) {
+      fullName = firstName + " " + lastname;
+    } else {
+      fullName = firstName + " " + middleName + " " + lastname;
+    }
+
     let email =
       firstName.toLowerCase() +
       "." +
