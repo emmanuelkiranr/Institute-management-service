@@ -1,6 +1,7 @@
 import { User, Account } from "../../../model/models.js";
 import ResponseModel from "../../../utilities/responseModel.js";
 import bcrypt from "bcrypt";
+import logger from "../../../config/logger.js";
 
 const updateContact = async (req, res) => {
   try {
@@ -13,6 +14,7 @@ const updateContact = async (req, res) => {
     });
 
     if (exists == null) {
+      logger.error("User doesn't exist");
       return res
         .status(400)
         .json(new ResponseModel(null, null, ["User doesn't exist"]));
@@ -32,11 +34,12 @@ const updateContact = async (req, res) => {
     );
 
     res.json(new ResponseModel("Contact updated successfully"));
+    logger.info("Contact updated successfully");
   } catch (err) {
-    console.log(err);
     res
       .status(500)
       .json(new ResponseModel(null, null, ["Internal server error"]));
+    logger.error(err);
   }
 };
 
@@ -52,6 +55,7 @@ const updatePassword = async (req, res) => {
     // In this if email and pemail is not present then you won't get the internal error
 
     if (exists == null) {
+      logger.error("Invalid email");
       return res
         .status(400)
         .json(
@@ -63,6 +67,7 @@ const updatePassword = async (req, res) => {
     let decryptPrevPass = await bcrypt.compare(password, prevPassword);
 
     if (decryptPrevPass) {
+      logger.error("New password is same as old password");
       return res
         .status(400)
         .json(
@@ -84,11 +89,12 @@ const updatePassword = async (req, res) => {
     );
 
     res.json(new ResponseModel("Successfully updated password"));
+    logger.info("Successfully updated password");
   } catch (err) {
-    console.log(err);
     res
       .status(500)
       .json(new ResponseModel(null, null, ["Internal serever error"]));
+    logger.error(err);
   }
 };
 

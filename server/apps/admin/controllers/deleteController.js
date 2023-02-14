@@ -1,6 +1,7 @@
 import { Account, User } from "../../../model/models.js";
 import ResponseModel from "../../../utilities/responseModel.js";
 import bcrypt from "bcrypt";
+import logger from "../../../config/logger.js";
 
 const deleteUser = async (req, res) => {
   try {
@@ -22,6 +23,7 @@ const deleteUser = async (req, res) => {
     });
 
     if (exists == null) {
+      logger.error("Invalid credentials");
       return res
         .status(400)
         .json(
@@ -49,12 +51,15 @@ const deleteUser = async (req, res) => {
           },
         });
         res.json(new ResponseModel("Successfully deleted user"));
+        logger.info("User deletion is successful");
       } else {
+        logger.error("Unauthorized access, only admin can delete");
         return res
           .status(400)
           .json(new ResponseModel(null, null, ["Unauthorized access"]));
       }
     } else {
+      logger.error("Admin entry not found");
       return res
         .status(400)
         .json(
@@ -62,10 +67,10 @@ const deleteUser = async (req, res) => {
         );
     }
   } catch (err) {
-    console.log(err);
     res
       .status(500)
       .json(new ResponseModel(null, null, ["Internal server error"]));
+    logger.error(err);
   }
 };
 

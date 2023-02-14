@@ -1,5 +1,6 @@
 import { User, Account } from "../../../model/models.js";
 import ResponseModel from "../../../utilities/responseModel.js";
+import logger from "../../../config/logger.js";
 
 // all user details
 const profile = async (req, res) => {
@@ -17,11 +18,12 @@ const profile = async (req, res) => {
       ],
     });
     res.json(new ResponseModel(result));
+    logger.info("Successfully fetched all users");
   } catch (err) {
-    console.log(err);
     res
       .status(500)
       .json(new ResponseModel(null, null, ["Internal server error"]));
+    logger.error(err);
   }
 };
 
@@ -46,11 +48,12 @@ const profileFiltered = async (req, res) => {
       },
     });
     res.json(new ResponseModel(result));
+    logger.info("Successfully fetched results");
   } catch (err) {
-    console.log(err);
     res
       .status(500)
       .json(new ResponseModel(null, null, ["Internal server error"]));
+    logger.error(err);
   }
 };
 
@@ -64,11 +67,12 @@ const parentAccounts = async (req, res) => {
       },
     });
     res.json(new ResponseModel(result));
+    logger.info("Successfully fetched parents information");
   } catch (err) {
-    console.log(err);
     res
       .status(500)
       .json(new ResponseModel(null, null, ["Internal server error"]));
+    logger.error(err);
   }
 };
 const studentAccounts = async (req, res) => {
@@ -79,11 +83,12 @@ const studentAccounts = async (req, res) => {
       },
     });
     res.json(new ResponseModel(result));
+    logger.info("Successfully fetched students information");
   } catch (err) {
-    console.log(err);
     res
       .status(500)
       .json(new ResponseModel(null, null, ["Internal server error"]));
+    logger.error(err);
   }
 };
 
