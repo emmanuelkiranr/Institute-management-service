@@ -1,6 +1,7 @@
 import { Account } from "../../../model/models.js";
 import ResponseModel from "../../../utilities/responseModel.js";
 import bcrypt from "bcrypt";
+import tokenHandler from "../../../utilities/tokenHandler.js";
 
 const login = async (req, res) => {
   try {
@@ -8,14 +9,10 @@ const login = async (req, res) => {
     let user = await Account.findOne({
       where: {
         email,
-        // password, cannot check password here since we need to compare the plain password with hashed one
       },
-    }); // the returned variable "user" will contain that users details from the Account table
+    });
 
     if (!user || user == null) {
-      // return res.status(400).json({
-      //   data: "User doesn't exist or Invalid Credentials!",
-      // }); // bad request
       return res
         .status(400)
         .json(
@@ -30,8 +27,13 @@ const login = async (req, res) => {
         user.dataValues.password
       );
       if (hashPassword) {
-        // res.json({ data: "login successfull", details: user });
-        res.json(new ResponseModel(user));
+        // create Token - will be associated with a user and will be used to authorize all further req of that user
+        const token = tokenHandler.createToken({
+          id: user.dataValues.id,
+          role: user.dataValues.role,
+        });
+        // res.json(new ResponseModel(user));
+        res.json(new ResponseModel(token));
       } else {
         return res
           .status(400)
