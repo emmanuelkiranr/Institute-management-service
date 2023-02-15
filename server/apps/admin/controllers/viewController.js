@@ -47,6 +47,17 @@ const profileFiltered = async (req, res) => {
         semester,
       },
     });
+    if (result.length === 0) {
+      logger.error("No students in the selected department or semester");
+      return res
+        .status(400)
+        .json(
+          new ResponseModel(null, null, [
+            "No students in the selected department or semester",
+          ])
+        );
+    }
+
     res.json(new ResponseModel(result));
     logger.info("Successfully fetched results");
   } catch (err) {
