@@ -1,9 +1,9 @@
 import { User, Account } from "../../../model/models.js";
-import ResponseModel from "../../../utilities/responseModel.js";
 import bcrypt from "bcrypt";
 import logger from "../../../config/logger.js";
+import httpStatus from "../../../config/constants.js";
 
-const updateContact = async (req, res) => {
+const updateContact = async (req, res, next) => {
   try {
     const { fullName, phone, pphone, address } = req.body;
 
@@ -15,9 +15,11 @@ const updateContact = async (req, res) => {
 
     if (exists == null) {
       logger.error("User doesn't exist");
-      return res
-        .status(400)
-        .json(new ResponseModel(null, null, ["User doesn't exist"]));
+      req.resModel = {
+        status: httpStatus.BAD_REQUEST,
+        error: ["User doesn't exist"],
+      };
+      return next();
     }
 
     await User.update(
@@ -32,18 +34,23 @@ const updateContact = async (req, res) => {
         },
       }
     );
-
-    res.json(new ResponseModel("Contact updated successfully"));
+    req.resModel = {
+      status: httpStatus.SUCCESS,
+      data: "Contact updated successfully",
+    };
+    next();
     logger.info("Contact updated successfully");
   } catch (err) {
-    res
-      .status(500)
-      .json(new ResponseModel(null, null, ["Internal server error"]));
+    req.resModel = {
+      status: httpStatus.INTERNAL_SERVER_ERROR,
+      error: ["Internal server error"],
+    };
+    next();
     logger.error(err);
   }
 };
 
-const updatePassword = async (req, res) => {
+const updatePassword = async (req, res, next) => {
   try {
     const { email, pemail, password } = req.body;
 
@@ -56,11 +63,11 @@ const updatePassword = async (req, res) => {
 
     if (exists == null) {
       logger.error("Invalid email");
-      return res
-        .status(400)
-        .json(
-          new ResponseModel(null, null, ["Bad request or invalid credentials"])
-        );
+      req.resModel = {
+        status: httpStatus.BAD_REQUEST,
+        error: ["Bad request or invalid credentials"],
+      };
+      return next();
     }
 
     let prevPassword = exists.dataValues.password;
@@ -68,13 +75,11 @@ const updatePassword = async (req, res) => {
 
     if (decryptPrevPass) {
       logger.error("New password is same as old password");
-      return res
-        .status(400)
-        .json(
-          new ResponseModel(null, null, [
-            "New password cannot be same as old one",
-          ])
-        );
+      req.resModel = {
+        status: httpStatus.BAD_REQUEST,
+        error: ["New password cannot be same as old one"],
+      };
+      return next();
     }
 
     let hashPassword = await bcrypt.hash(password, 10);
@@ -88,12 +93,18 @@ const updatePassword = async (req, res) => {
       }
     );
 
-    res.json(new ResponseModel("Successfully updated password"));
+    req.resModel = {
+      status: httpStatus.SUCCESS,
+      data: "Successfully updated password",
+    };
+    next();
     logger.info("Successfully updated password");
   } catch (err) {
-    res
-      .status(500)
-      .json(new ResponseModel(null, null, ["Internal serever error"]));
+    req.resModel = {
+      status: httpStatus.INTERNAL_SERVER_ERROR,
+      error: ["Internal server error"],
+    };
+    next();
     logger.error(err);
   }
 };

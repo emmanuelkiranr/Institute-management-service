@@ -1,9 +1,9 @@
 import { Account, User } from "../../../model/models.js";
-import ResponseModel from "../../../utilities/responseModel.js";
 import bcrypt from "bcrypt";
 import logger from "../../../config/logger.js";
+import httpStatus from "../../../config/constants.js";
 
-const deleteUser = async (req, res) => {
+const deleteUser = async (req, res, next) => {
   try {
     const { fullName, email, password } = req.body;
 
@@ -24,11 +24,11 @@ const deleteUser = async (req, res) => {
 
     if (exists == null) {
       logger.error("Invalid credentials");
-      return res
-        .status(400)
-        .json(
-          new ResponseModel(null, null, ["Bad request or Invalid credentials"])
-        );
+      req.resModel = {
+        status: httpStatus.BAD_REQUEST,
+        error: ["Bad request or Invalid credentials"],
+      };
+      return next();
     }
 
     // Enter admin password to confirm deletion
@@ -50,26 +50,34 @@ const deleteUser = async (req, res) => {
             fullName,
           },
         });
-        res.json(new ResponseModel("Successfully deleted user"));
+        req.resModel = {
+          status: httpStatus.SUCCESS,
+          data: "Successfully deleted user",
+        };
+        next();
         logger.info("User deletion is successful");
       } else {
         logger.error("Unauthorized access, only admin can delete");
-        return res
-          .status(400)
-          .json(new ResponseModel(null, null, ["Unauthorized access"]));
+        req.resModel = {
+          status: httpStatus.BAD_REQUEST,
+          error: ["Unauthorized access"],
+        };
+        return next();
       }
     } else {
       logger.error("Admin entry not found");
-      return res
-        .status(400)
-        .json(
-          new ResponseModel(null, null, ["Bad request or Invalid credentials"])
-        );
+      req.resModel = {
+        status: httpStatus.BAD_REQUEST,
+        error: ["Bad request or Invalid credentials"],
+      };
+      return next();
     }
   } catch (err) {
-    res
-      .status(500)
-      .json(new ResponseModel(null, null, ["Internal server error"]));
+    req.resModel = {
+      status: httpStatus.INTERNAL_SERVER_ERROR,
+      error: ["Internal server error"],
+    };
+    next();
     logger.error(err);
   }
 };

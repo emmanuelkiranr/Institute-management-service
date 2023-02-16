@@ -1,9 +1,9 @@
 import { User, Account } from "../../../model/models.js";
-import ResponseModel from "../../../utilities/responseModel.js";
 import bcrypt from "bcrypt";
 import logger from "../../../config/logger.js";
+import httpStatus from "../../../config/constants.js";
 
-const register = async (req, res) => {
+const register = async (req, res, next) => {
   try {
     const {
       firstName,
@@ -49,9 +49,11 @@ const register = async (req, res) => {
     });
     if (user) {
       logger.error("Student already exists");
-      return res
-        .status(400)
-        .json(new ResponseModel(null, null, ["Student already exists"]));
+      req.resModel = {
+        status: httpStatus.BAD_REQUEST,
+        error: ["Student already exists"],
+      };
+      return next();
     }
 
     let semester = 1;
@@ -103,10 +105,18 @@ const register = async (req, res) => {
       UserId: newUser.dataValues.id,
     });
 
-    res.json(new ResponseModel("Successfully registered student"));
+    req.resModel = {
+      status: httpStatus.SUCCESS,
+      data: "Successfully registered student",
+    };
+    next();
     logger.info("Successfully registered student");
   } catch (err) {
-    res.status(500).json(new ResponseModel(null, null, ["Unable to register"]));
+    req.resModel = {
+      status: httpStatus.INTERNAL_SERVER_ERROR,
+      error: ["Unable to register"],
+    };
+    next();
     logger.error(err);
   }
 };

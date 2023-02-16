@@ -1,9 +1,9 @@
 import { User, Account } from "../../../model/models.js";
-import ResponseModel from "../../../utilities/responseModel.js";
 import logger from "../../../config/logger.js";
+import httpStatus from "../../../config/constants.js";
 
 // all user details
-const profile = async (req, res) => {
+const profile = async (req, res, next) => {
   try {
     const result = await User.findAll({
       attributes: [
@@ -17,18 +17,24 @@ const profile = async (req, res) => {
         "pphone",
       ],
     });
-    res.json(new ResponseModel(result));
+    req.resModel = {
+      status: httpStatus.SUCCESS,
+      data: result,
+    };
+    next();
     logger.info("Successfully fetched all users");
   } catch (err) {
-    res
-      .status(500)
-      .json(new ResponseModel(null, null, ["Internal server error"]));
+    req.resModel = {
+      status: httpStatus.INTERNAL_SERVER_ERROR,
+      error: ["Internal server error"],
+    };
+    next();
     logger.error(err);
   }
 };
 
 // all users filtered by department and semester
-const profileFiltered = async (req, res) => {
+const profileFiltered = async (req, res, next) => {
   try {
     const { department, semester } = req.body;
     const result = await User.findAll({
@@ -49,56 +55,72 @@ const profileFiltered = async (req, res) => {
     });
     if (result.length === 0) {
       logger.error("No students in the selected department or semester");
-      return res
-        .status(400)
-        .json(
-          new ResponseModel(null, null, [
-            "No students in the selected department or semester",
-          ])
-        );
+      req.resModel = {
+        status: httpStatus.BAD_REQUEST,
+        error: ["No students in the selected department or semester"],
+      };
+      return next();
     }
 
-    res.json(new ResponseModel(result));
+    req.resModel = {
+      status: httpStatus.SUCCESS,
+      data: result,
+    };
+    next();
     logger.info("Successfully fetched results");
   } catch (err) {
-    res
-      .status(500)
-      .json(new ResponseModel(null, null, ["Internal server error"]));
+    req.resModel = {
+      status: httpStatus.INTERNAL_SERVER_ERROR,
+      error: ["Internal server error"],
+    };
+    next();
     logger.error(err);
   }
 };
 
 // view all parent and student accounts
 
-const parentAccounts = async (req, res) => {
+const parentAccounts = async (req, res, next) => {
   try {
     let result = await Account.findAll({
       where: {
         role: "P",
       },
     });
-    res.json(new ResponseModel(result));
+    req.resModel = {
+      status: httpStatus.SUCCESS,
+      data: result,
+    };
+    next();
     logger.info("Successfully fetched parents information");
   } catch (err) {
-    res
-      .status(500)
-      .json(new ResponseModel(null, null, ["Internal server error"]));
+    req.resModel = {
+      status: httpStatus.INTERNAL_SERVER_ERROR,
+      error: ["Internal server error"],
+    };
+    next();
     logger.error(err);
   }
 };
-const studentAccounts = async (req, res) => {
+const studentAccounts = async (req, res, next) => {
   try {
     let result = await Account.findAll({
       where: {
         role: "S",
       },
     });
-    res.json(new ResponseModel(result));
+    req.resModel = {
+      status: httpStatus.SUCCESS,
+      data: result,
+    };
+    next();
     logger.info("Successfully fetched students information");
   } catch (err) {
-    res
-      .status(500)
-      .json(new ResponseModel(null, null, ["Internal server error"]));
+    req.resModel = {
+      status: httpStatus.INTERNAL_SERVER_ERROR,
+      error: ["Internal server error"],
+    };
+    next();
     logger.error(err);
   }
 };
