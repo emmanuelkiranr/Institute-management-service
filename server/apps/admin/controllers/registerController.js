@@ -1,7 +1,7 @@
 import { User, Account } from "../../../model/models.js";
 import bcrypt from "bcrypt";
 import logger from "../../../config/logger.js";
-import httpStatus from "../../../config/constants.js";
+import { STATUS_CODES } from "../../../config/constants.js";
 
 const register = async (req, res, next) => {
   try {
@@ -50,7 +50,7 @@ const register = async (req, res, next) => {
     if (user) {
       logger.error("Student already exists");
       req.resModel = {
-        status: httpStatus.BAD_REQUEST,
+        status: STATUS_CODES.BAD_REQUEST,
         error: ["Student already exists"],
       };
       return next();
@@ -106,14 +106,14 @@ const register = async (req, res, next) => {
     });
 
     req.resModel = {
-      status: httpStatus.SUCCESS,
+      status: STATUS_CODES.SUCCESS,
       data: "Successfully registered student",
     };
     next();
     logger.info("Successfully registered student");
   } catch (err) {
     req.resModel = {
-      status: httpStatus.INTERNAL_SERVER_ERROR,
+      status: STATUS_CODES.INTERNAL_SERVER_ERROR,
       error: ["Unable to register"],
     };
     next();

@@ -1,7 +1,7 @@
 import { User, Account } from "../../../model/models.js";
 import bcrypt from "bcrypt";
 import logger from "../../../config/logger.js";
-import httpStatus from "../../../config/constants.js";
+import { STATUS_CODES } from "../../../config/constants.js";
 
 const updateContact = async (req, res, next) => {
   try {
@@ -16,7 +16,7 @@ const updateContact = async (req, res, next) => {
     if (exists == null) {
       logger.error("User doesn't exist");
       req.resModel = {
-        status: httpStatus.BAD_REQUEST,
+        status: STATUS_CODES.BAD_REQUEST,
         error: ["User doesn't exist"],
       };
       return next();
@@ -35,14 +35,14 @@ const updateContact = async (req, res, next) => {
       }
     );
     req.resModel = {
-      status: httpStatus.SUCCESS,
+      status: STATUS_CODES.SUCCESS,
       data: "Contact updated successfully",
     };
     next();
     logger.info("Contact updated successfully");
   } catch (err) {
     req.resModel = {
-      status: httpStatus.INTERNAL_SERVER_ERROR,
+      status: STATUS_CODES.INTERNAL_SERVER_ERROR,
       error: ["Internal server error"],
     };
     next();
@@ -64,7 +64,7 @@ const updatePassword = async (req, res, next) => {
     if (exists == null) {
       logger.error("Invalid email");
       req.resModel = {
-        status: httpStatus.BAD_REQUEST,
+        status: STATUS_CODES.BAD_REQUEST,
         error: ["Bad request or invalid credentials"],
       };
       return next();
@@ -76,7 +76,7 @@ const updatePassword = async (req, res, next) => {
     if (decryptPrevPass) {
       logger.error("New password is same as old password");
       req.resModel = {
-        status: httpStatus.BAD_REQUEST,
+        status: STATUS_CODES.BAD_REQUEST,
         error: ["New password cannot be same as old one"],
       };
       return next();
@@ -94,14 +94,14 @@ const updatePassword = async (req, res, next) => {
     );
 
     req.resModel = {
-      status: httpStatus.SUCCESS,
+      status: STATUS_CODES.SUCCESS,
       data: "Successfully updated password",
     };
     next();
     logger.info("Successfully updated password");
   } catch (err) {
     req.resModel = {
-      status: httpStatus.INTERNAL_SERVER_ERROR,
+      status: STATUS_CODES.INTERNAL_SERVER_ERROR,
       error: ["Internal server error"],
     };
     next();

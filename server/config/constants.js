@@ -5,4 +5,11 @@ const STATUS_CODES = {
   INTERNAL_SERVER_ERROR: 500,
 };
 
-export default STATUS_CODES;
+const TOKEN_OPTIONS = {
+  EXPIREY: "7d",
+  ALGORITHM: "HS256",
+  AUDIENCE: "http://localhost",
+  ISSUER: "http://localhost",
+};
+
+export { STATUS_CODES, TOKEN_OPTIONS };
