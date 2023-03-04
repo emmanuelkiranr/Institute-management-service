@@ -1,14 +1,14 @@
-import register from "./controllers/registerController.js";
-import view from "./controllers/viewController.js";
-import update from "./controllers/updateController.js";
-import deleteUser from "./controllers/deleteController.js";
 import express from "express";
+import register from "../apps/admin/controllers/registerController.js";
+import view from "../apps/admin/controllers/viewController.js";
+import update from "../apps/admin/controllers/updateController.js";
+import deleteUser from "../apps/admin/controllers/deleteController.js";
 import {
   verifyDetails,
   viewProfile,
   updateContact,
   deleteData,
-} from "../../utilities/validator/adminValidatior.js";
+} from "../utilities/validator/adminValidatior.js";
 
 const router = express.Router();
 
